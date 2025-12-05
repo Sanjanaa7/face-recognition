@@ -1,0 +1,35 @@
+# Core Framework
+fastapi>=0.100.0
+uvicorn[standard]>=0.23.0
+python-multipart
+pydantic>=2.0.0
+pydantic-settings
+email-validator
+
+# Computer Vision & Face Recognition
+opencv-python
+mediapipe
+deepface
+tf-keras
+
+# Image Processing
+Pillow
+numpy
+scikit-learn
+
+# Database
+sqlalchemy
+aiosqlite
+
+# Utilities
+python-dotenv
+pandas
+requests
+
+# CORS Support
+python-jose[cryptography]
+passlib[bcrypt]
+
+# Testing
+pytest
+httpx

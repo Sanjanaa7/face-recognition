@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Face Recognition System - Advanced AI-Powered Interface</title>
+    <meta name="description"
+        content="Professional Face Recognition System with AI-powered detection, landmark analysis, and emotion recognition">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <!-- Background Animation -->
+    <div class="background-animation">
+        <div class="gradient-orb orb-1"></div>
+        <div class="gradient-orb orb-2"></div>
+        <div class="gradient-orb orb-3"></div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo-container">
+                <div class="logo-icon">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM12 5C13.66 5 15 6.34 15 8C15 9.66 13.66 11 12 11C10.34 11 9 9.66 9 8C9 6.34 10.34 5 12 5ZM12 19.2C9.5 19.2 7.29 17.92 6 15.98C6.03 13.99 10 12.9 12 12.9C13.99 12.9 17.97 13.99 18 15.98C16.71 17.92 14.5 19.2 12 19.2Z"
+                            fill="url(#gradient1)" />
+                        <defs>
+                            <linearGradient id="gradient1" x1="2" y1="2" x2="22" y2="22">
+                                <stop offset="0%" stop-color="#667eea" />
+                                <stop offset="100%" stop-color="#764ba2" />
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                </div>
+                <div class="logo-text">
+                    <h1>Face Recognition AI</h1>
+                    <p class="subtitle">Advanced Computer Vision System</p>
+                </div>
+            </div>
+            <div class="status-indicator">
+                <div class="status-dot"></div>
+                <span id="apiStatus">Connecting...</span>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Tab Navigation -->
+            <div class="tab-navigation">
+                <button class="tab-btn active" data-tab="detect">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M12 12C14.21 12 16 10.21 16 8C16 5.79 14.21 4 12 4C9.79 4 8 5.79 8 8C8 10.21 9.79 12 12 12ZM12 14C9.33 14 4 15.34 4 18V20H20V18C20 15.34 14.67 14 12 14Z"
+                            fill="currentColor" />
+                    </svg>
+                    Detect Face
+                </button>
+                <button class="tab-btn" data-tab="save">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M19 13H13V19H11V13H5V11H11V5H13V11H19V13Z" fill="currentColor" />
+                    </svg>
+                    Save Face
+                </button>
+                <button class="tab-btn" data-tab="recognize">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M9 11.75C9.69 11.75 10.25 11.19 10.25 10.5C10.25 9.81 9.69 9.25 9 9.25C8.31 9.25 7.75 9.81 7.75 10.5C7.75 11.19 8.31 11.75 9 11.75ZM15 11.75C15.69 11.75 16.25 11.19 16.25 10.5C16.25 9.81 15.69 9.25 15 9.25C14.31 9.25 13.75 9.81 13.75 10.5C13.75 11.19 14.31 11.75 15 11.75ZM12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM12 20C7.59 20 4 16.41 4 12C4 11.71 4.02 11.42 4.05 11.14C6.41 10.09 8.28 8.16 9.26 5.77C11.07 8.33 14.05 10 17.42 10C18.2 10 18.95 9.91 19.67 9.74C19.88 10.45 20 11.21 20 12C20 16.41 16.41 20 12 20Z"
+                            fill="currentColor" />
+                    </svg>
+                    Recognize
+                </button>
+                <button class="tab-btn" data-tab="manage">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M3 13H11V3H3V13ZM3 21H11V15H3V21ZM13 21H21V11H13V21ZM13 3V9H21V3H13Z"
+                            fill="currentColor" />
+                    </svg>
+                    Manage Faces
+                </button>
+            </div>
+
+            <!-- Tab Content -->
+            <div class="tab-content-container">
+                <!-- Detect Face Tab -->
+                <div class="tab-content active" id="detect-tab">
+                    <div class="card">
+                        <h2 class="card-title">Face Detection & Analysis</h2>
+                        <p class="card-description">Upload an image to detect faces and analyze facial features,
+                            emotions, age, and gender</p>
+
+                        <div class="detection-mode-selector">
+                            <label class="radio-card">
+                                <input type="radio" name="detectionMode" value="basic" checked>
+                                <div class="radio-content">
+                                    <h3>Basic Detection</h3>
+                                    <p>Face bounding box & embeddings</p>
+                                </div>
+                            </label>
+                            <label class="radio-card">
+                                <input type="radio" name="detectionMode" value="landmarks">
+                                <div class="radio-content">
+                                    <h3>With Landmarks</h3>
+                                    <p>Facial landmarks (eyes, nose, mouth)</p>
+                                </div>
+                            </label>
+                            <label class="radio-card">
+                                <input type="radio" name="detectionMode" value="deep">
+                                <div class="radio-content">
+                                    <h3>Deep Analysis</h3>
+                                    <p>Emotion, age & gender prediction</p>
+                                </div>
+                            </label>
+                        </div>
+
+                        <div class="upload-area" id="detectUploadArea">
+                            <input type="file" id="detectImageInput" accept="image/*" hidden>
+                            <div class="upload-content">
+                                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path
+                                        d="M19.35 10.04C18.67 6.59 15.64 4 12 4C9.11 4 6.6 5.64 5.35 8.04C2.34 8.36 0 10.91 0 14C0 17.31 2.69 20 6 20H19C21.76 20 24 17.76 24 15C24 12.36 21.95 10.22 19.35 10.04ZM14 13V17H10V13H7L12 8L17 13H14Z"
+                                        fill="currentColor" />
+                                </svg>
+                                <h3>Drop image here or click to upload</h3>
+                                <p>Supports: JPG, PNG, WEBP</p>
+                            </div>
+                            <img id="detectPreview" class="preview-image" style="display: none;">
+                        </div>
+
+                        <button type="button" class="btn btn-primary" id="detectBtn" disabled>
+                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M12 4.5C7 4.5 2.73 7.61 1 12C2.73 16.39 7 19.5 12 19.5C17 19.5 21.27 16.39 23 12C21.27 7.61 17 4.5 12 4.5ZM12 17C9.24 17 7 14.76 7 12C7 9.24 9.24 7 12 7C14.76 7 17 9.24 17 12C17 14.76 14.76 17 12 17ZM12 9C10.34 9 9 10.34 9 12C9 13.66 10.34 15 12 15C13.66 15 15 13.66 15 12C15 10.34 13.66 9 12 9Z"
+                                    fill="currentColor" />
+                            </svg>
+                            Detect Face
+                        </button>
+
+                        <div id="detectResult" class="result-container" style="display: none;"></div>
+                    </div>
+                </div>
+
+                <!-- Save Face Tab -->
+                <div class="tab-content" id="save-tab">
+                    <div class="card">
+                        <h2 class="card-title">Save Face to Database</h2>
+                        <p class="card-description">Register a new face with identity information</p>
+
+                        <div class="upload-area" id="saveUploadArea">
+                            <input type="file" id="saveImageInput" accept="image/*" hidden>
+                            <div class="upload-content">
+                                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path
+                                        d="M19.35 10.04C18.67 6.59 15.64 4 12 4C9.11 4 6.6 5.64 5.35 8.04C2.34 8.36 0 10.91 0 14C0 17.31 2.69 20 6 20H19C21.76 20 24 17.76 24 15C24 12.36 21.95 10.22 19.35 10.04ZM14 13V17H10V13H7L12 8L17 13H14Z"
+                                        fill="currentColor" />
+                                </svg>
+                                <h3>Drop image here or click to upload</h3>
+                                <p>Clear frontal face photo recommended</p>
+                            </div>
+                            <img id="savePreview" class="preview-image" style="display: none;">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="personName">Full Name *</label>
+                            <input type="text" id="personName" placeholder="Enter full name" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="personEmail">Email (Optional)</label>
+                            <input type="email" id="personEmail" placeholder="email@example.com">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="personPhone">Phone (Optional)</label>
+                            <input type="tel" id="personPhone" placeholder="+1 234 567 8900">
+                        </div>
+
+                        <button type="button" class="btn btn-primary" id="saveBtn" disabled>
+                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M17 3H5C3.89 3 3 3.9 3 5V19C3 20.1 3.89 21 5 21H19C20.1 21 21 20.1 21 19V7L17 3ZM12 19C10.34 19 9 17.66 9 16C9 14.34 10.34 13 12 13C13.66 13 15 14.34 15 16C15 17.66 13.66 19 12 19ZM15 9H5V5H15V9Z"
+                                    fill="currentColor" />
+                            </svg>
+                            Save to Database
+                        </button>
+
+                        <div id="saveResult" class="result-container" style="display: none;"></div>
+                    </div>
+                </div>
+
+                <!-- Recognize Face Tab -->
+                <div class="tab-content" id="recognize-tab">
+                    <div class="card">
+                        <h2 class="card-title">Recognize Face</h2>
+                        <p class="card-description">Identify a person from the database</p>
+
+                        <div class="upload-area" id="recognizeUploadArea">
+                            <input type="file" id="recognizeImageInput" accept="image/*" hidden>
+                            <div class="upload-content">
+                                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path
+                                        d="M19.35 10.04C18.67 6.59 15.64 4 12 4C9.11 4 6.6 5.64 5.35 8.04C2.34 8.36 0 10.91 0 14C0 17.31 2.69 20 6 20H19C21.76 20 24 17.76 24 15C24 12.36 21.95 10.22 19.35 10.04ZM14 13V17H10V13H7L12 8L17 13H14Z"
+                                        fill="currentColor" />
+                                </svg>
+                                <h3>Drop image here or click to upload</h3>
+                                <p>Upload a face to identify</p>
+                            </div>
+                            <img id="recognizePreview" class="preview-image" style="display: none;">
+                        </div>
+
+                        <button type="button" class="btn btn-primary" id="recognizeBtn" disabled>
+                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M15.5 14H14.71L14.43 13.73C15.41 12.59 16 11.11 16 9.5C16 5.91 13.09 3 9.5 3C5.91 3 3 5.91 3 9.5C3 13.09 5.91 16 9.5 16C11.11 16 12.59 15.41 13.73 14.43L14 14.71V15.5L19 20.49L20.49 19L15.5 14ZM9.5 14C7.01 14 5 11.99 5 9.5C5 7.01 7.01 5 9.5 5C11.99 5 14 7.01 14 9.5C14 11.99 11.99 14 9.5 14Z"
+                                    fill="currentColor" />
+                            </svg>
+                            Recognize Face
+                        </button>
+
+                        <div id="recognizeResult" class="result-container" style="display: none;"></div>
+                    </div>
+                </div>
+
+                <!-- Manage Faces Tab -->
+                <div class="tab-content" id="manage-tab">
+                    <div class="card">
+                        <h2 class="card-title">Manage Saved Faces</h2>
+                        <p class="card-description">View and manage all registered faces</p>
+
+                        <button class="btn btn-secondary" id="refreshListBtn">
+                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M17.65 6.35C16.2 4.9 14.21 4 12 4C7.58 4 4.01 7.58 4.01 12C4.01 16.42 7.58 20 12 20C15.73 20 18.84 17.45 19.73 14H17.65C16.83 16.33 14.61 18 12 18C8.69 18 6 15.31 6 12C6 8.69 8.69 6 12 6C13.66 6 15.14 6.69 16.22 7.78L13 11H20V4L17.65 6.35Z"
+                                    fill="currentColor" />
+                            </svg>
+                            Refresh List
+                        </button>
+
+                        <div id="facesList" class="faces-list"></div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>Powered by MediaPipe, DeepFace & FastAPI | © 2025 Face Recognition AI</p>
+        </footer>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner"></div>
+        <p>Processing...</p>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

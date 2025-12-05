@@ -1,0 +1,823 @@
+{
+    "info": {
+        "name": "Face Recognition System API",
+        "description": "Complete API collection for Face Recognition System with MediaPipe and DeepFace",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+        "version": "1.0.0"
+    },
+    "item": [
+        {
+            "name": "Face Detection Endpoints",
+            "item": [
+                {
+                    "name": "Face Detection - Basic",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "image",
+                                    "type": "file",
+                                    "src": [],
+                                    "description": "Upload a face image (JPG, PNG, WEBP)"
+                                }
+                            ]
+                        },
+                        "url": {
+                            "raw": "http://127.0.0.1:8000/api/face-detection",
+                            "protocol": "http",
+                            "host": [
+                                "127",
+                                "0",
+                                "0",
+                                "1"
+                            ],
+                            "port": "8000",
+                            "path": [
+                                "api",
+                                "face-detection"
+                            ]
+                        },
+                        "description": "Detects a face in the uploaded image and returns bounding box and face embeddings."
+                    },
+                    "response": [
+                        {
+                            "name": "Success - Face Detected",
+                            "originalRequest": {
+                                "method": "POST",
+                                "header": [],
+                                "body": {
+                                    "mode": "formdata",
+                                    "formdata": [
+                                        {
+                                            "key": "image",
+                                            "type": "file",
+                                            "src": []
+                                        }
+                                    ]
+                                },
+                                "url": {
+                                    "raw": "http://127.0.0.1:8000/api/face-detection",
+                                    "protocol": "http",
+                                    "host": [
+                                        "127",
+                                        "0",
+                                        "0",
+                                        "1"
+                                    ],
+                                    "port": "8000",
+                                    "path": [
+                                        "api",
+                                        "face-detection"
+                                    ]
+                                }
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ],
+                            "body": "{\n  \"success\": true,\n  \"message\": \"Face detected successfully\",\n  \"face_detected\": true,\n  \"bounding_box\": {\n    \"x\": 120,\n    \"y\": 80,\n    \"width\": 200,\n    \"height\": 250\n  },\n  \"face_embedding\": [0.123, -0.456, 0.789],\n  \"confidence\": 0.98\n}"
+                        },
+                        {
+                            "name": "No Face Detected",
+                            "originalRequest": {
+                                "method": "POST",
+                                "header": [],
+                                "body": {
+                                    "mode": "formdata",
+                                    "formdata": [
+                                        {
+                                            "key": "image",
+                                            "type": "file",
+                                            "src": []
+                                        }
+                                    ]
+                                },
+                                "url": {
+                                    "raw": "http://127.0.0.1:8000/api/face-detection",
+                                    "protocol": "http",
+                                    "host": [
+                                        "127",
+                                        "0",
+                                        "0",
+                                        "1"
+                                    ],
+                                    "port": "8000",
+                                    "path": [
+                                        "api",
+                                        "face-detection"
+                                    ]
+                                }
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ],
+                            "body": "{\n  \"success\": true,\n  \"message\": \"No face detected in the image\",\n  \"face_detected\": false\n}"
+                        }
+                    ]
+                },
+                {
+                    "name": "Face Detection - With Landmarks",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "image",
+                                    "type": "file",
+                                    "src": [],
+                                    "description": "Upload a face image"
+                                }
+                            ]
+                        },
+                        "url": {
+                            "raw": "http://127.0.0.1:8000/api/face-detection-landmarks",
+                            "protocol": "http",
+                            "host": [
+                                "127",
+                                "0",
+                                "0",
+                                "1"
+                            ],
+                            "port": "8000",
+                            "path": [
+                                "api",
+                                "face-detection-landmarks"
+                            ]
+                        },
+                        "description": "Detects face and extracts facial landmarks (eyes, nose, mouth, face oval)."
+                    },
+                    "response": [
+                        {
+                            "name": "Success - With Landmarks",
+                            "originalRequest": {
+                                "method": "POST",
+                                "header": [],
+                                "body": {
+                                    "mode": "formdata",
+                                    "formdata": [
+                                        {
+                                            "key": "image",
+                                            "type": "file",
+                                            "src": []
+                                        }
+                                    ]
+                                },
+                                "url": {
+                                    "raw": "http://127.0.0.1:8000/api/face-detection-landmarks",
+                                    "protocol": "http",
+                                    "host": [
+                                        "127",
+                                        "0",
+                                        "0",
+                                        "1"
+                                    ],
+                                    "port": "8000",
+                                    "path": [
+                                        "api",
+                                        "face-detection-landmarks"
+                                    ]
+                                }
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ],
+                            "body": "{\n  \"success\": true,\n  \"message\": \"Face and landmarks detected successfully\",\n  \"face_detected\": true,\n  \"bounding_box\": {\n    \"x\": 120,\n    \"y\": 80,\n    \"width\": 200,\n    \"height\": 250\n  },\n  \"face_embedding\": [0.123, -0.456],\n  \"landmarks\": {\n    \"left_eye\": [{\"x\": 150, \"y\": 120, \"z\": 0.1}],\n    \"right_eye\": [{\"x\": 200, \"y\": 120, \"z\": 0.1}],\n    \"nose\": [{\"x\": 175, \"y\": 160, \"z\": 0.2}],\n    \"mouth\": [{\"x\": 175, \"y\": 200, \"z\": 0.1}],\n    \"face_oval\": [{\"x\": 120, \"y\": 100, \"z\": 0.0}]\n  },\n  \"confidence\": 0.98\n}"
+                        }
+                    ]
+                },
+                {
+                    "name": "Face Detection - Deep Analysis",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "image",
+                                    "type": "file",
+                                    "src": [],
+                                    "description": "Upload a face image"
+                                }
+                            ]
+                        },
+                        "url": {
+                            "raw": "http://127.0.0.1:8000/api/face-detection-deep",
+                            "protocol": "http",
+                            "host": [
+                                "127",
+                                "0",
+                                "0",
+                                "1"
+                            ],
+                            "port": "8000",
+                            "path": [
+                                "api",
+                                "face-detection-deep"
+                            ]
+                        },
+                        "description": "Detects face and performs deep analysis: emotion, age, and gender prediction."
+                    },
+                    "response": [
+                        {
+                            "name": "Success - Deep Analysis",
+                            "originalRequest": {
+                                "method": "POST",
+                                "header": [],
+                                "body": {
+                                    "mode": "formdata",
+                                    "formdata": [
+                                        {
+                                            "key": "image",
+                                            "type": "file",
+                                            "src": []
+                                        }
+                                    ]
+                                },
+                                "url": {
+                                    "raw": "http://127.0.0.1:8000/api/face-detection-deep",
+                                    "protocol": "http",
+                                    "host": [
+                                        "127",
+                                        "0",
+                                        "0",
+                                        "1"
+                                    ],
+                                    "port": "8000",
+                                    "path": [
+                                        "api",
+                                        "face-detection-deep"
+                                    ]
+                                }
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ],
+                            "body": "{\n  \"success\": true,\n  \"message\": \"Face detected and analyzed successfully\",\n  \"face_detected\": true,\n  \"bounding_box\": {\n    \"x\": 120,\n    \"y\": 80,\n    \"width\": 200,\n    \"height\": 250\n  },\n  \"face_embedding\": [0.123, -0.456],\n  \"emotion\": \"happy\",\n  \"emotion_scores\": {\n    \"angry\": 2.5,\n    \"disgust\": 0.1,\n    \"fear\": 1.2,\n    \"happy\": 85.3,\n    \"sad\": 3.4,\n    \"surprise\": 5.2,\n    \"neutral\": 2.3\n  },\n  \"age\": 28,\n  \"gender\": \"Man\",\n  \"gender_confidence\": 98.5,\n  \"confidence\": 0.98\n}"
+                        }
+                    ]
+                }
+            ],
+            "description": "Endpoints for face detection without database operations"
+        },
+        {
+            "name": "Face Recognition Endpoints",
+            "item": [
+                {
+                    "name": "Save Face",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "image",
+                                    "type": "file",
+                                    "src": [],
+                                    "description": "Face image to save"
+                                },
+                                {
+                                    "key": "name",
+                                    "value": "John Doe",
+                                    "type": "text",
+                                    "description": "Person's full name (required)"
+                                },
+                                {
+                                    "key": "email",
+                                    "value": "john.doe@example.com",
+                                    "type": "text",
+                                    "description": "Email address (optional)"
+                                },
+                                {
+                                    "key": "phone",
+                                    "value": "+1234567890",
+                                    "type": "text",
+                                    "description": "Phone number (optional)"
+                                }
+                            ]
+                        },
+                        "url": {
+                            "raw": "http://127.0.0.1:8000/api/save-face",
+                            "protocol": "http",
+                            "host": [
+                                "127",
+                                "0",
+                                "0",
+                                "1"
+                            ],
+                            "port": "8000",
+                            "path": [
+                                "api",
+                                "save-face"
+                            ]
+                        },
+                        "description": "Save a face to the database with identity information."
+                    },
+                    "response": [
+                        {
+                            "name": "Success - Face Saved",
+                            "originalRequest": {
+                                "method": "POST",
+                                "header": [],
+                                "body": {
+                                    "mode": "formdata",
+                                    "formdata": [
+                                        {
+                                            "key": "image",
+                                            "type": "file",
+                                            "src": []
+                                        },
+                                        {
+                                            "key": "name",
+                                            "value": "John Doe",
+                                            "type": "text"
+                                        },
+                                        {
+                                            "key": "email",
+                                            "value": "john.doe@example.com",
+                                            "type": "text"
+                                        }
+                                    ]
+                                },
+                                "url": {
+                                    "raw": "http://127.0.0.1:8000/api/save-face",
+                                    "protocol": "http",
+                                    "host": [
+                                        "127",
+                                        "0",
+                                        "0",
+                                        "1"
+                                    ],
+                                    "port": "8000",
+                                    "path": [
+                                        "api",
+                                        "save-face"
+                                    ]
+                                }
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ],
+                            "body": "{\n  \"success\": true,\n  \"message\": \"Face saved successfully for John Doe\",\n  \"face_id\": 1,\n  \"name\": \"John Doe\"\n}"
+                        },
+                        {
+                            "name": "Error - No Face Detected",
+                            "originalRequest": {
+                                "method": "POST",
+                                "header": [],
+                                "body": {
+                                    "mode": "formdata",
+                                    "formdata": [
+                                        {
+                                            "key": "image",
+                                            "type": "file",
+                                            "src": []
+                                        },
+                                        {
+                                            "key": "name",
+                                            "value": "John Doe",
+                                            "type": "text"
+                                        }
+                                    ]
+                                },
+                                "url": {
+                                    "raw": "http://127.0.0.1:8000/api/save-face",
+                                    "protocol": "http",
+                                    "host": [
+                                        "127",
+                                        "0",
+                                        "0",
+                                        "1"
+                                    ],
+                                    "port": "8000",
+                                    "path": [
+                                        "api",
+                                        "save-face"
+                                    ]
+                                }
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ],
+                            "body": "{\n  \"success\": false,\n  \"message\": \"No face detected in the image. Please upload a clear image with a visible face.\"\n}"
+                        }
+                    ]
+                },
+                {
+                    "name": "Recognize Face",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "image",
+                                    "type": "file",
+                                    "src": [],
+                                    "description": "Image to recognize"
+                                }
+                            ]
+                        },
+                        "url": {
+                            "raw": "http://127.0.0.1:8000/api/recognize-face",
+                            "protocol": "http",
+                            "host": [
+                                "127",
+                                "0",
+                                "0",
+                                "1"
+                            ],
+                            "port": "8000",
+                            "path": [
+                                "api",
+                                "recognize-face"
+                            ]
+                        },
+                        "description": "Recognize a face from the database."
+                    },
+                    "response": [
+                        {
+                            "name": "Success - Face Recognized",
+                            "originalRequest": {
+                                "method": "POST",
+                                "header": [],
+                                "body": {
+                                    "mode": "formdata",
+                                    "formdata": [
+                                        {
+                                            "key": "image",
+                                            "type": "file",
+                                            "src": []
+                                        }
+                                    ]
+                                },
+                                "url": {
+                                    "raw": "http://127.0.0.1:8000/api/recognize-face",
+                                    "protocol": "http",
+                                    "host": [
+                                        "127",
+                                        "0",
+                                        "0",
+                                        "1"
+                                    ],
+                                    "port": "8000",
+                                    "path": [
+                                        "api",
+                                        "recognize-face"
+                                    ]
+                                }
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ],
+                            "body": "{\n  \"success\": true,\n  \"message\": \"Face recognized as John Doe\",\n  \"recognized\": true,\n  \"name\": \"John Doe\",\n  \"confidence\": 0.85,\n  \"face_id\": 1,\n  \"email\": \"john.doe@example.com\",\n  \"phone\": \"+1234567890\"\n}"
+                        },
+                        {
+                            "name": "Unknown Face",
+                            "originalRequest": {
+                                "method": "POST",
+                                "header": [],
+                                "body": {
+                                    "mode": "formdata",
+                                    "formdata": [
+                                        {
+                                            "key": "image",
+                                            "type": "file",
+                                            "src": []
+                                        }
+                                    ]
+                                },
+                                "url": {
+                                    "raw": "http://127.0.0.1:8000/api/recognize-face",
+                                    "protocol": "http",
+                                    "host": [
+                                        "127",
+                                        "0",
+                                        "0",
+                                        "1"
+                                    ],
+                                    "port": "8000",
+                                    "path": [
+                                        "api",
+                                        "recognize-face"
+                                    ]
+                                }
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ],
+                            "body": "{\n  \"success\": true,\n  \"message\": \"Face not recognized. Unknown person.\",\n  \"recognized\": false,\n  \"confidence\": 0.45\n}"
+                        }
+                    ]
+                },
+                {
+                    "name": "List All Faces",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "http://127.0.0.1:8000/api/list-faces",
+                            "protocol": "http",
+                            "host": [
+                                "127",
+                                "0",
+                                "0",
+                                "1"
+                            ],
+                            "port": "8000",
+                            "path": [
+                                "api",
+                                "list-faces"
+                            ]
+                        },
+                        "description": "Get a list of all saved faces in the database."
+                    },
+                    "response": [
+                        {
+                            "name": "Success - List Faces",
+                            "originalRequest": {
+                                "method": "GET",
+                                "header": [],
+                                "url": {
+                                    "raw": "http://127.0.0.1:8000/api/list-faces",
+                                    "protocol": "http",
+                                    "host": [
+                                        "127",
+                                        "0",
+                                        "0",
+                                        "1"
+                                    ],
+                                    "port": "8000",
+                                    "path": [
+                                        "api",
+                                        "list-faces"
+                                    ]
+                                }
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ],
+                            "body": "{\n  \"success\": true,\n  \"message\": \"Found 2 face(s) in the database\",\n  \"total_faces\": 2,\n  \"faces\": [\n    {\n      \"id\": 1,\n      \"name\": \"John Doe\",\n      \"email\": \"john.doe@example.com\",\n      \"phone\": \"+1234567890\",\n      \"created_at\": \"2025-12-04T10:30:00\",\n      \"embedding_model\": \"VGG-Face\"\n    },\n    {\n      \"id\": 2,\n      \"name\": \"Jane Smith\",\n      \"email\": \"jane.smith@example.com\",\n      \"phone\": null,\n      \"created_at\": \"2025-12-04T11:15:00\",\n      \"embedding_model\": \"VGG-Face\"\n    }\n  ]\n}"
+                        }
+                    ]
+                },
+                {
+                    "name": "Delete Face by ID",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [],
+                        "url": {
+                            "raw": "http://127.0.0.1:8000/api/delete-face?face_id=1",
+                            "protocol": "http",
+                            "host": [
+                                "127",
+                                "0",
+                                "0",
+                                "1"
+                            ],
+                            "port": "8000",
+                            "path": [
+                                "api",
+                                "delete-face"
+                            ],
+                            "query": [
+                                {
+                                    "key": "face_id",
+                                    "value": "1",
+                                    "description": "ID of the face to delete"
+                                }
+                            ]
+                        },
+                        "description": "Delete a face from the database by ID."
+                    },
+                    "response": [
+                        {
+                            "name": "Success - Face Deleted",
+                            "originalRequest": {
+                                "method": "DELETE",
+                                "header": [],
+                                "url": {
+                                    "raw": "http://127.0.0.1:8000/api/delete-face?face_id=1",
+                                    "protocol": "http",
+                                    "host": [
+                                        "127",
+                                        "0",
+                                        "0",
+                                        "1"
+                                    ],
+                                    "port": "8000",
+                                    "path": [
+                                        "api",
+                                        "delete-face"
+                                    ],
+                                    "query": [
+                                        {
+                                            "key": "face_id",
+                                            "value": "1"
+                                        }
+                                    ]
+                                }
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ],
+                            "body": "{\n  \"success\": true,\n  \"message\": \"Successfully deleted 1 face record(s)\",\n  \"deleted_count\": 1\n}"
+                        }
+                    ]
+                },
+                {
+                    "name": "Delete Face by Name",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [],
+                        "url": {
+                            "raw": "http://127.0.0.1:8000/api/delete-face?name=John Doe",
+                            "protocol": "http",
+                            "host": [
+                                "127",
+                                "0",
+                                "0",
+                                "1"
+                            ],
+                            "port": "8000",
+                            "path": [
+                                "api",
+                                "delete-face"
+                            ],
+                            "query": [
+                                {
+                                    "key": "name",
+                                    "value": "John Doe",
+                                    "description": "Name of the person to delete"
+                                }
+                            ]
+                        },
+                        "description": "Delete a face from the database by name."
+                    },
+                    "response": [
+                        {
+                            "name": "Success - Face Deleted by Name",
+                            "originalRequest": {
+                                "method": "DELETE",
+                                "header": [],
+                                "url": {
+                                    "raw": "http://127.0.0.1:8000/api/delete-face?name=John Doe",
+                                    "protocol": "http",
+                                    "host": [
+                                        "127",
+                                        "0",
+                                        "0",
+                                        "1"
+                                    ],
+                                    "port": "8000",
+                                    "path": [
+                                        "api",
+                                        "delete-face"
+                                    ],
+                                    "query": [
+                                        {
+                                            "key": "name",
+                                            "value": "John Doe"
+                                        }
+                                    ]
+                                }
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ],
+                            "body": "{\n  \"success\": true,\n  \"message\": \"Successfully deleted 1 face record(s)\",\n  \"deleted_count\": 1\n}"
+                        }
+                    ]
+                }
+            ],
+            "description": "Endpoints for face recognition with database operations"
+        },
+        {
+            "name": "Health Check",
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "http://127.0.0.1:8000/health",
+                    "protocol": "http",
+                    "host": [
+                        "127",
+                        "0",
+                        "0",
+                        "1"
+                    ],
+                    "port": "8000",
+                    "path": [
+                        "health"
+                    ]
+                },
+                "description": "Check if the API is running."
+            },
+            "response": [
+                {
+                    "name": "Success - Healthy",
+                    "originalRequest": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "http://127.0.0.1:8000/health",
+                            "protocol": "http",
+                            "host": [
+                                "127",
+                                "0",
+                                "0",
+                                "1"
+                            ],
+                            "port": "8000",
+                            "path": [
+                                "health"
+                            ]
+                        }
+                    },
+                    "status": "OK",
+                    "code": 200,
+                    "_postman_previewlanguage": "json",
+                    "header": [
+                        {
+                            "key": "Content-Type",
+                            "value": "application/json"
+                        }
+                    ],
+                    "body": "{\n  \"status\": \"healthy\",\n  \"service\": \"Face Recognition System\",\n  \"version\": \"1.0.0\"\n}"
+                }
+            ]
+        }
+    ]
+}
