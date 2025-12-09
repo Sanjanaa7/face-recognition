@@ -338,6 +338,8 @@ async function handleSaveFace(event) {
             showSuccess(resultContainer, `✅ ${data.message}<br>Face ID: ${data.face_id}`);
             // Do not auto-reset form so user can see the success message
             // Form can be reset manually or by uploading new image
+
+
         } else {
             showError(resultContainer, data.message);
         }
