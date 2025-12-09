@@ -4,6 +4,7 @@ Main FastAPI Application for Face Recognition System
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from fastapi.staticfiles import StaticFiles
 from app.routers import face_detection_router, face_recognition_router
 from app.models import init_db
 import uvicorn
@@ -71,10 +72,10 @@ async def startup_event():
     print("📖 ReDoc available at http://127.0.0.1:8000/redoc")
 
 
-@app.get("/", tags=["Root"])
+@app.get("/api/info", tags=["Root"])
 async def root():
     """
-    Root endpoint
+    API Information endpoint
     """
     return JSONResponse(content={
         "message": "Welcome to Face Recognition System API",
@@ -107,6 +108,9 @@ async def health_check():
         "service": "Face Recognition System",
         "version": "1.0.0"
     })
+
+# Mount frontend static files
+app.mount("/", StaticFiles(directory="frontend", html=True), name="frontend")
 
 
 if __name__ == "__main__":

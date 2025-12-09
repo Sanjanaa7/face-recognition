@@ -55,16 +55,16 @@ function setupEventListeners() {
 
     // Detect tab
     setupUploadArea('detectUploadArea', 'detectImageInput', 'detectPreview', 'detectBtn');
-    document.getElementById('detectBtn').addEventListener('click', (e) => handleDetectFace(e));
+    document.getElementById('detectBtn').addEventListener('click', handleDetectFace, false);
 
     // Save tab
     setupUploadArea('saveUploadArea', 'saveImageInput', 'savePreview', 'saveBtn');
-    document.getElementById('saveBtn').addEventListener('click', (e) => handleSaveFace(e));
+    document.getElementById('saveBtn').addEventListener('click', handleSaveFace, false);
     document.getElementById('personName').addEventListener('input', validateSaveForm);
 
     // Recognize tab
     setupUploadArea('recognizeUploadArea', 'recognizeImageInput', 'recognizePreview', 'recognizeBtn');
-    document.getElementById('recognizeBtn').addEventListener('click', (e) => handleRecognizeFace(e));
+    document.getElementById('recognizeBtn').addEventListener('click', handleRecognizeFace, false);
 
     // Manage tab
     document.getElementById('refreshListBtn').addEventListener('click', loadFacesList);
@@ -167,7 +167,10 @@ function hideLoading() {
 // ============================================
 
 async function handleDetectFace(event) {
-    if (event) event.preventDefault();
+    if (event) {
+        event.preventDefault();
+        event.stopPropagation();
+    }
     const imageInput = document.getElementById('detectImageInput');
     const resultContainer = document.getElementById('detectResult');
     const mode = document.querySelector('input[name="detectionMode"]:checked').value;
@@ -288,11 +291,63 @@ function displayDetectionResult(data, mode, container) {
     }
 
     // Landmarks
-    if (mode === 'landmarks' && data.landmarks) {
-        html += '<div class="result-item">';
-        html += '<span class="result-label">Landmarks Detected:</span>';
-        html += `<span class="result-value">Eyes, Nose, Mouth, Face Oval</span>`;
-        html += '</div>';
+    if (mode === 'landmarks') {
+        if (data.all_landmarks && data.total_landmarks) {
+            html += '<div class="result-item">';
+            html += '<span class="result-label">Total Landmarks:</span>';
+            html += `<span class="result-value">${data.total_landmarks} 3D points</span>`;
+            html += '</div>';
+        }
+
+        if (data.categorized) {
+            html += '<div class="result-item" style="flex-direction: column; align-items: flex-start;">';
+            html += '<span class="result-label" style="margin-bottom: 0.5rem;">Categorized Landmarks:</span>';
+            html += '<div style="width: 100%; display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.5rem;">';
+
+            const categories = {
+                'left_eye': 'Left Eye',
+                'right_eye': 'Right Eye',
+                'left_eyebrow': 'Left Eyebrow',
+                'right_eyebrow': 'Right Eyebrow',
+                'nose': 'Nose',
+                'mouth': 'Mouth',
+                'lips': 'Lips',
+                'face_oval': 'Face Oval'
+            };
+
+            for (const [key, label] of Object.entries(categories)) {
+                if (data.categorized[key]) {
+                    html += '<div style="padding: 0.5rem; background: rgba(255,255,255,0.05); border-radius: 8px;">';
+                    html += `<div style="font-size: 0.85rem; color: var(--text-secondary);">${label}</div>`;
+                    html += `<div style="font-size: 0.9rem; font-weight: 600; color: #667eea;">${data.categorized[key].length} points</div>`;
+                    html += '</div>';
+                }
+            }
+
+            html += '</div>';
+            html += '</div>';
+
+            // Show sample landmark coordinates
+            if (data.all_landmarks && data.all_landmarks.length > 0) {
+                html += '<div class="result-item" style="flex-direction: column; align-items: flex-start;">';
+                html += '<span class="result-label" style="margin-bottom: 0.5rem;">Landmark Coordinates (showing 20 of ' + data.all_landmarks.length + '):</span>';
+                html += '<div style="width: 100%; font-family: monospace; font-size: 0.85rem; background: rgba(0,0,0,0.3); padding: 0.75rem; border-radius: 8px; max-height: 200px; overflow-y: auto;">';
+
+                // Show first 20 landmarks
+                for (let i = 0; i < Math.min(20, data.all_landmarks.length); i++) {
+                    const lm = data.all_landmarks[i];
+                    html += `<div style="margin-bottom: 0.3rem; color: var(--text-secondary);">`;
+                    html += `[${String(lm.index).padStart(3, ' ')}] x:${lm.x.toFixed(1).padStart(6, ' ')}, y:${lm.y.toFixed(1).padStart(6, ' ')}, z:${lm.z.toFixed(4)}`;
+                    html += '</div>';
+                }
+
+                if (data.all_landmarks.length > 20) {
+                    html += '<div style="margin-top: 0.5rem; color: var(--text-muted); font-size: 0.8rem;">... and ' + (data.all_landmarks.length - 20) + ' more points (scroll in API response for all)</div>';
+                }
+                html += '</div>';
+                html += '</div>';
+            }
+        }
     }
 
     html += '</div>';
@@ -305,7 +360,10 @@ function displayDetectionResult(data, mode, container) {
 // ============================================
 
 async function handleSaveFace(event) {
-    if (event) event.preventDefault();
+    if (event) {
+        event.preventDefault();
+        event.stopPropagation();
+    }
     const imageInput = document.getElementById('saveImageInput');
     const name = document.getElementById('personName').value.trim();
     const email = document.getElementById('personEmail').value.trim();
@@ -336,9 +394,6 @@ async function handleSaveFace(event) {
 
         if (data.success) {
             showSuccess(resultContainer, `✅ ${data.message}<br>Face ID: ${data.face_id}`);
-            // Do not auto-reset form so user can see the success message
-            // Form can be reset manually or by uploading new image
-
 
         } else {
             showError(resultContainer, data.message);
@@ -365,7 +420,10 @@ function resetSaveForm() {
 // ============================================
 
 async function handleRecognizeFace(event) {
-    if (event) event.preventDefault();
+    if (event) {
+        event.preventDefault();
+        event.stopPropagation();
+    }
     const imageInput = document.getElementById('recognizeImageInput');
     const resultContainer = document.getElementById('recognizeResult');
 
@@ -448,7 +506,7 @@ async function loadFacesList() {
                 if (face.phone) html += `<p>Phone: ${face.phone}</p>`;
                 html += '</div>';
                 html += '<div class="face-actions">';
-                html += `<button class="btn-icon" onclick="deleteFace(${face.id}, '${face.name}')" title="Delete">`;
+                html += `<button type="button" class="btn-icon" onclick="deleteFace(${face.id}, '${face.name}')" title="Delete">`;
                 html += '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">';
                 html += '<path d="M6 19C6 20.1 6.9 21 8 21H16C17.1 21 18 20.1 18 19V7H6V19ZM19 4H15.5L14.5 3H9.5L8.5 4H5V6H19V4Z" fill="currentColor"/>';
                 html += '</svg>';

@@ -153,6 +153,7 @@ class FaceDetectionService:
     def detect_landmarks(self, image: np.ndarray) -> Optional[Dict]:
         """
         Detect facial landmarks using MediaPipe Face Mesh
+        Returns ALL 468 face mesh landmarks plus categorized groups
         """
         # Convert BGR to RGB
         image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
@@ -166,29 +167,46 @@ class FaceDetectionService:
         # Get first face landmarks
         face_landmarks = results.multi_face_landmarks[0]
         
-        # Extract key landmarks
-        landmarks = {
-            'left_eye': [],
-            'right_eye': [],
-            'nose': [],
-            'mouth': [],
-            'face_oval': []
-        }
+        ih, iw = image.shape[:2]
         
-        # MediaPipe Face Mesh landmark indices
-        LEFT_EYE_INDICES = [33, 133, 160, 159, 158, 157, 173]
-        RIGHT_EYE_INDICES = [362, 263, 387, 386, 385, 384, 398]
-        NOSE_INDICES = [1, 2, 98, 327]
-        MOUTH_INDICES = [61, 291, 0, 17, 269, 405]
+        # Extract ALL 468 landmarks with their coordinates
+        all_landmarks = []
+        for idx, lm in enumerate(face_landmarks.landmark):
+            all_landmarks.append({
+                'index': idx,
+                'x': float(lm.x * iw),
+                'y': float(lm.y * ih),
+                'z': float(lm.z)
+            })
+        
+        # MediaPipe Face Mesh landmark indices for categorized groups
+        LEFT_EYE_INDICES = [33, 133, 160, 159, 158, 157, 173, 144, 145, 153, 154, 155]
+        RIGHT_EYE_INDICES = [362, 263, 387, 386, 385, 384, 398, 373, 374, 380, 381, 382]
+        NOSE_INDICES = [1, 2, 98, 327, 4, 5, 6, 19, 94, 141, 168, 195, 197]
+        MOUTH_INDICES = [61, 291, 0, 17, 269, 405, 39, 40, 185, 314, 317, 402, 78, 308, 191, 80, 81, 82]
         FACE_OVAL_INDICES = [10, 338, 297, 332, 284, 251, 389, 356, 454, 323, 361, 288, 
                              397, 365, 379, 378, 400, 377, 152, 148, 176, 149, 150, 136, 
                              172, 58, 132, 93, 234, 127, 162, 21, 54, 103, 67, 109]
+        LEFT_EYEBROW_INDICES = [70, 63, 105, 66, 107, 55, 65, 52, 53, 46]
+        RIGHT_EYEBROW_INDICES = [300, 293, 334, 296, 336, 285, 295, 282, 283, 276]
+        LIPS_INDICES = [61, 146, 91, 181, 84, 17, 314, 405, 321, 375, 291, 308, 324, 318, 402, 317, 14, 87, 178, 88, 95]
         
-        ih, iw = image.shape[:2]
+        # Extract categorized landmarks
+        categorized_landmarks = {
+            'left_eye': [],
+            'right_eye': [],
+            'left_eyebrow': [],
+            'right_eyebrow': [],
+            'nose': [],
+            'mouth': [],
+            'lips': [],
+            'face_oval': []
+        }
         
         for idx in LEFT_EYE_INDICES:
             lm = face_landmarks.landmark[idx]
-            landmarks['left_eye'].append({
+            categorized_landmarks['left_eye'].append({
+                'index': idx,
                 'x': float(lm.x * iw),
                 'y': float(lm.y * ih),
                 'z': float(lm.z)
@@ -196,7 +214,26 @@ class FaceDetectionService:
         
         for idx in RIGHT_EYE_INDICES:
             lm = face_landmarks.landmark[idx]
-            landmarks['right_eye'].append({
+            categorized_landmarks['right_eye'].append({
+                'index': idx,
+                'x': float(lm.x * iw),
+                'y': float(lm.y * ih),
+                'z': float(lm.z)
+            })
+        
+        for idx in LEFT_EYEBROW_INDICES:
+            lm = face_landmarks.landmark[idx]
+            categorized_landmarks['left_eyebrow'].append({
+                'index': idx,
+                'x': float(lm.x * iw),
+                'y': float(lm.y * ih),
+                'z': float(lm.z)
+            })
+        
+        for idx in RIGHT_EYEBROW_INDICES:
+            lm = face_landmarks.landmark[idx]
+            categorized_landmarks['right_eyebrow'].append({
+                'index': idx,
                 'x': float(lm.x * iw),
                 'y': float(lm.y * ih),
                 'z': float(lm.z)
@@ -204,7 +241,8 @@ class FaceDetectionService:
         
         for idx in NOSE_INDICES:
             lm = face_landmarks.landmark[idx]
-            landmarks['nose'].append({
+            categorized_landmarks['nose'].append({
+                'index': idx,
                 'x': float(lm.x * iw),
                 'y': float(lm.y * ih),
                 'z': float(lm.z)
@@ -212,7 +250,17 @@ class FaceDetectionService:
         
         for idx in MOUTH_INDICES:
             lm = face_landmarks.landmark[idx]
-            landmarks['mouth'].append({
+            categorized_landmarks['mouth'].append({
+                'index': idx,
+                'x': float(lm.x * iw),
+                'y': float(lm.y * ih),
+                'z': float(lm.z)
+            })
+        
+        for idx in LIPS_INDICES:
+            lm = face_landmarks.landmark[idx]
+            categorized_landmarks['lips'].append({
+                'index': idx,
                 'x': float(lm.x * iw),
                 'y': float(lm.y * ih),
                 'z': float(lm.z)
@@ -220,13 +268,18 @@ class FaceDetectionService:
         
         for idx in FACE_OVAL_INDICES:
             lm = face_landmarks.landmark[idx]
-            landmarks['face_oval'].append({
+            categorized_landmarks['face_oval'].append({
+                'index': idx,
                 'x': float(lm.x * iw),
                 'y': float(lm.y * ih),
                 'z': float(lm.z)
             })
         
-        return landmarks
+        return {
+            'all_landmarks': all_landmarks,  # All 468 points
+            'total_landmarks': len(all_landmarks),
+            'categorized': categorized_landmarks  # Grouped by facial features
+        }
     
     def analyze_face_deep(self, image: np.ndarray, bbox: Optional[Dict] = None) -> Optional[Dict]:
         """

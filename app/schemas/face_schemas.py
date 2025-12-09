@@ -20,6 +20,7 @@ class BoundingBox(BaseModel):
 
 class FaceLandmark(BaseModel):
     """Facial landmark point"""
+    index: Optional[int] = None  # Landmark index (0-467 for MediaPipe Face Mesh)
     x: float
     y: float
     z: Optional[float] = None
@@ -42,7 +43,9 @@ class FaceDetectionLandmarksResponse(BaseModel):
     face_detected: bool
     bounding_box: Optional[BoundingBox] = None
     face_embedding: Optional[List[float]] = None
-    landmarks: Optional[Dict[str, List[FaceLandmark]]] = None
+    all_landmarks: Optional[List[FaceLandmark]] = None  # All 468 face mesh points
+    total_landmarks: Optional[int] = None  # Total number of landmarks
+    categorized: Optional[Dict[str, List[FaceLandmark]]] = None  # Grouped by feature
     confidence: Optional[float] = None
 
 

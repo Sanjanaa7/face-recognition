@@ -99,7 +99,7 @@ async def detect_face_landmarks(image: UploadFile = File(...)):
         embedding = face_detection_service.get_face_embedding(img_array, bbox=detection_result['bounding_box'])
         
         # Detect landmarks
-        landmarks = face_detection_service.detect_landmarks(img_array)
+        landmarks_data = face_detection_service.detect_landmarks(img_array)
         
         return FaceDetectionLandmarksResponse(
             success=True,
@@ -107,7 +107,9 @@ async def detect_face_landmarks(image: UploadFile = File(...)):
             face_detected=True,
             bounding_box=detection_result['bounding_box'],
             face_embedding=embedding,
-            landmarks=landmarks,
+            all_landmarks=landmarks_data['all_landmarks'] if landmarks_data else None,
+            total_landmarks=landmarks_data['total_landmarks'] if landmarks_data else None,
+            categorized=landmarks_data['categorized'] if landmarks_data else None,
             confidence=detection_result['confidence']
         )
         
