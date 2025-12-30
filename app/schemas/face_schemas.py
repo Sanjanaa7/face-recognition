@@ -16,7 +16,10 @@ class BoundingBox(BaseModel):
     y: int
     width: int
     height: int
-
+class ImageMeta(BaseModel):
+    """Metadata about the processed image"""
+    width: int
+    height: int
 
 class FaceLandmark(BaseModel):
     """Facial landmark point"""
@@ -34,6 +37,22 @@ class FaceDetectionResponse(BaseModel):
     bounding_box: Optional[BoundingBox] = None
     face_embedding: Optional[List[float]] = None
     confidence: Optional[float] = None
+
+
+class FaceDetectionResult(BaseModel):
+    """Individual face detection result"""
+    bounding_box: BoundingBox
+    face_embedding: Optional[List[float]] = None
+    confidence: float
+
+
+class MultiFaceDetectionResponse(BaseModel):
+    """Response for multi-face detection"""
+    success: bool
+    message: str
+    faces_detected: int
+    detections: List[FaceDetectionResult]
+    image_meta: Optional[ImageMeta] = None
 
 
 class FaceDetectionLandmarksResponse(BaseModel):
@@ -83,6 +102,13 @@ class SaveFaceResponse(BaseModel):
     name: Optional[str] = None
 
 
+class MultiSaveFaceResponse(BaseModel):
+    """Response for bulk saving faces"""
+    success: bool
+    message: str
+    saved_faces: List[SaveFaceResponse]
+
+
 class RecognizeFaceResponse(BaseModel):
     """Response for face recognition"""
     success: bool
@@ -93,6 +119,26 @@ class RecognizeFaceResponse(BaseModel):
     face_id: Optional[int] = None
     email: Optional[str] = None
     phone: Optional[str] = None
+
+
+class RecognizedFace(BaseModel):
+    """Detailed information for a recognized face"""
+    recognized: bool
+    name: Optional[str] = "Unknown"
+    confidence: Optional[float] = None
+    face_id: Optional[int] = None
+    email: Optional[str] = None
+    phone: Optional[str] = None
+    bounding_box: BoundingBox
+
+
+class MultiRecognizeFaceResponse(BaseModel):
+    """Response for multi-face recognition"""
+    success: bool
+    message: str
+    faces_detected: int
+    recognized_faces: List[RecognizedFace]
+    image_meta: Optional[ImageMeta] = None
 
 
 class DeleteFaceRequest(BaseModel):
@@ -114,6 +160,7 @@ class FaceInfo(BaseModel):
     name: str
     email: Optional[str] = None
     phone: Optional[str] = None
+    thumbnail: Optional[str] = None
     created_at: datetime
     embedding_model: str
 

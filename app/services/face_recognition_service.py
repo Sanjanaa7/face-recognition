@@ -37,6 +37,7 @@ class FaceRecognitionService:
         embedding: List[float],
         email: Optional[str] = None,
         phone: Optional[str] = None,
+        thumbnail: Optional[str] = None,
         model_name: str = "VGG-Face"
     ) -> FaceRecord:
         """
@@ -51,7 +52,8 @@ class FaceRecognitionService:
             email=email,
             phone=phone,
             face_embedding=embedding_bytes,
-            embedding_model=model_name
+            embedding_model=model_name,
+            thumbnail=thumbnail
         )
         
         db.add(face_record)

@@ -21,8 +21,8 @@ class FaceDetectionService:
         self.mp_face_detection = mp.solutions.face_detection
         self.mp_face_mesh = mp.solutions.face_mesh
         self.face_detection = self.mp_face_detection.FaceDetection(
-            model_selection=0,  # 0 for short range (faster), 1 for full range
-            min_detection_confidence=0.5
+            model_selection=1,  # 0 for short range, 1 for full range (better for group photos)
+            min_detection_confidence=0.4 # Slightly lower for higher recall in groups
         )
         self.face_mesh = self.mp_face_mesh.FaceMesh(
             static_image_mode=True,
@@ -30,7 +30,7 @@ class FaceDetectionService:
             min_detection_confidence=0.5
         )
         
-    def decode_image(self, image_data: bytes, max_size: int = 800) -> np.ndarray:
+    def decode_image(self, image_data: bytes, max_size: int = 1200) -> np.ndarray:
         """
         Decode image from bytes to numpy array and resize if too large
         """
@@ -100,6 +100,52 @@ class FaceDetectionService:
             'confidence': float(confidence)
         }
     
+    def detect_multiple_faces(self, image: np.ndarray) -> List[Dict]:
+        """
+        Detect multiple faces in image and return bounding boxes
+        """
+        # Convert BGR to RGB for MediaPipe
+        image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+        
+        # Detect faces
+        results = self.face_detection.process(image_rgb)
+        
+        detections_list = []
+        
+        if not results.detections:
+            return detections_list
+        
+        ih, iw, _ = image.shape
+        
+        for detection in results.detections:
+            # Get bounding box
+            bboxC = detection.location_data.relative_bounding_box
+            
+            bbox = {
+                'x': int(bboxC.xmin * iw),
+                'y': int(bboxC.ymin * ih),
+                'width': int(bboxC.width * iw),
+                'height': int(bboxC.height * ih)
+            }
+            
+            # Ensure bbox is within image bounds
+            bbox['x'] = max(0, bbox['x'])
+            bbox['y'] = max(0, bbox['y'])
+            bbox['width'] = min(iw - bbox['x'], bbox['width'])
+            bbox['height'] = min(ih - bbox['y'], bbox['height'])
+            
+            # Get confidence score
+            confidence = detection.score[0]
+            
+            detections_list.append({
+                'bounding_box': bbox,
+                'confidence': float(confidence)
+            })
+            
+        # Sort by X coordinate (left to right) for predictable ordering
+        detections_list.sort(key=lambda d: d['bounding_box']['x'])
+        return detections_list, iw, ih
+    
     def _crop_face(self, image: np.ndarray, bbox: Dict) -> np.ndarray:
         """Helper to crop face from image using bbox"""
         x, y, w, h = bbox['x'], bbox['y'], bbox['width'], bbox['height']
@@ -113,6 +159,24 @@ class FaceDetectionService:
         end_x = min(image.shape[1], x + w + margin_x)
         
         return image[start_y:end_y, start_x:end_x]
+
+    def get_face_thumbnail_base64(self, image: np.ndarray, bbox: Dict) -> str:
+        """Crop face and return as base64 encoded thumbnail"""
+        face_img = self._crop_face(image, bbox)
+        
+        # Resize to consistent size for database
+        face_img = cv2.resize(face_img, (150, 150))
+        
+        # Convert BGR to RGB
+        face_rgb = cv2.cvtColor(face_img, cv2.COLOR_BGR2RGB)
+        
+        # Encode as JPEG
+        pil_img = Image.fromarray(face_rgb)
+        buffered = BytesIO()
+        pil_img.save(buffered, format="JPEG", quality=85)
+        
+        img_str = base64.b64encode(buffered.getvalue()).decode()
+        return f"data:image/jpeg;base64,{img_str}"
 
     def get_face_embedding(self, image: np.ndarray, model_name: str = "VGG-Face", bbox: Optional[Dict] = None) -> Optional[List[float]]:
         """

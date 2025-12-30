@@ -25,6 +25,7 @@ class FaceRecord(Base):
     # Additional metadata
     embedding_model = Column(String, default="VGG-Face")
     image_path = Column(String, nullable=True)
+    thumbnail = Column(String, nullable=True) # Base64 encoded thumbnail
     
     # Timestamps
     created_at = Column(DateTime, default=datetime.utcnow)

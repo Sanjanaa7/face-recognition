@@ -4,6 +4,8 @@ Face Detection Router - Detection endpoints WITHOUT database operations
 from fastapi import APIRouter, File, UploadFile, HTTPException
 from app.schemas import (
     FaceDetectionResponse,
+    FaceDetectionResult,
+    MultiFaceDetectionResponse,
     FaceDetectionLandmarksResponse,
     FaceDetectionDeepResponse,
     ErrorResponse
@@ -55,6 +57,61 @@ async def detect_face(image: UploadFile = File(...)):
             bounding_box=detection_result['bounding_box'],
             face_embedding=embedding,
             confidence=detection_result['confidence']
+        )
+        
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
+
+
+@router.post(
+    "/face-detection-multiple",
+    response_model=MultiFaceDetectionResponse,
+    summary="Detect multiple faces and extract embeddings",
+    description="Detects all faces in the group photo and returns bounding boxes and embeddings for each."
+)
+async def detect_multiple_faces(image: UploadFile = File(...)):
+    """
+    Detect multiple faces in image and return:
+    - Array of face objects (bbox, embeddings, confidence)
+    """
+    try:
+        # Read image data
+        image_data = await image.read()
+        
+        # Decode image
+        img_array = face_detection_service.decode_image(image_data)
+        
+        # Detect multiple faces
+        detections, iw, ih = face_detection_service.detect_multiple_faces(img_array)
+        
+        if not detections:
+            return MultiFaceDetectionResponse(
+                success=True,
+                message="No faces detected in the image",
+                faces_detected=0,
+                detections=[],
+                image_meta={"width": iw, "height": ih}
+            )
+        
+        results = []
+        for det in detections:
+            # Get face embedding for each detected face
+            embedding = face_detection_service.get_face_embedding(img_array, bbox=det['bounding_box'])
+            
+            results.append(FaceDetectionResult(
+                bounding_box=det['bounding_box'],
+                face_embedding=embedding,
+                confidence=det['confidence']
+            ))
+            
+        return MultiFaceDetectionResponse(
+            success=True,
+            message=f"Detected {len(results)} face(s) successfully",
+            faces_detected=len(results),
+            detections=results,
+            image_meta={"width": iw, "height": ih}
         )
         
     except ValueError as e:

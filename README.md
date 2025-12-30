@@ -32,13 +32,20 @@ A complete, production-ready Face Recognition System built with **FastAPI**, **M
 
 ### 🔍 Face Detection & Analysis
 - **Basic Face Detection** - Detect faces with bounding boxes and extract embeddings
+- **Multi-face Detection** - Detect all faces in group photos with individual embeddings
 - **Facial Landmarks** - Identify 468 key facial features (eyes, nose, mouth, face oval)
 - **Deep Analysis** - Predict emotion, age, and gender with confidence scores
 
 ### 👤 Identity Management
 - **Save Faces** - Register new faces with personal information
+- **Stored Thumbnails** - Automatically captures and stores high-quality face crops for visual record keeping
+- **Bulk Save** - Register multiple people simultaneously from group photos
+- **Live Order Preview** - Visual numbers (1, 2, 3...) show the exact mapping of names to faces during bulk registration
 - **Recognize Faces** - Identify registered individuals from images
-- **Manage Database** - View, search, and delete face records
+- **Multi-face Recognition** - Detect and recognize multiple people in group photos
+- **Left-to-Right Sorting** - Predictable mapping of names to faces based on horizontal position
+- **Coordinate Scaling** - High-precision bounding boxes that scale perfectly to any image resolution
+- **Manage Database** - View, search, and delete face records with visual thumbnail verification
 
 ### 🎨 Modern UI
 - Beautiful glassmorphism design with animated gradients
@@ -125,8 +132,8 @@ Face_Recognition/
 ├── app/                                    # Backend Application
 │   ├── main.py                            # FastAPI application
 │   ├── routers/                           # API Endpoints
-│   │   ├── face_detection_router.py       # Detection endpoints (3)
-│   │   └── face_recognition_router.py     # Recognition endpoints (4)
+│   │   ├── face_detection_router.py       # Detection endpoints (4)
+│   │   └── face_recognition_router.py     # Recognition endpoints (6)
 │   ├── services/                          # Business Logic
 │   │   ├── face_detection_service.py      # MediaPipe & DeepFace
 │   │   └── face_recognition_service.py    # Database operations
@@ -245,6 +252,29 @@ Deep face analysis with emotion, age, and gender.
 - Age prediction
 - Gender with confidence
 
+#### 4. `/api/face-detection-multiple` (POST)
+Detect multiple faces in a group photo and extract embeddings for each. Results are automatically sorted from **left to right** for predictable indexing. Returns 'image_meta' with original dimensions for scaling.
+
+**Response:**
+```json
+{
+  "success": true,
+  "message": "Detected 3 face(s) successfully",
+  "faces_detected": 3,
+  "detections": [
+    {
+      "bounding_box": { "x": 100, "y": 50, "width": 80, "height": 100 },
+      "face_embedding": [0.123, -0.456, ...],
+      "confidence": 0.98
+    }
+  ],
+  "image_meta": {
+    "width": 1200,
+    "height": 800
+  }
+}
+```
+
 ### Face Recognition Endpoints (Database Operations)
 
 #### 4. `/api/save-face` (POST)
@@ -269,24 +299,66 @@ Save a face to the database.
 }
 ```
 
-#### 5. `/api/recognize-face` (POST)
-Recognize a face from the database.
+#### 5. `/api/delete-face` (DELETE)
+Delete a face from the database.
+
+**Query Parameters:**
+- `face_id` (int, optional)
+- `name` (string, optional)
+
+#### 6. `/api/list-faces` (GET)
+List all saved faces with thumbnail previews.
 
 **Response:**
 ```json
 {
   "success": true,
-  "message": "Face recognized as John Doe",
-  "recognized": true,
-  "name": "John Doe",
-  "confidence": 0.85,
-  "face_id": 1,
-  "email": "john@example.com",
-  "phone": "+1234567890"
+  "message": "Found 5 face(s) in the database",
+  "total_faces": 5,
+  "faces": [
+    {
+      "id": 1,
+      "name": "John Doe",
+      "email": "john@example.com",
+      "thumbnail": "data:image/jpeg;base64,...",
+      "created_at": "2025-12-04T10:30:00",
+      "embedding_model": "VGG-Face"
+    }
+  ]
 }
 ```
 
-#### 6. `/api/delete-face` (DELETE)
+#### 7. `/api/save-multiple-faces` (POST)
+Save multiple faces from a group photo. Names are matched to faces sequentially from **left to right**.
+
+**Request:**
+- `names` (string, required): Comma-separated names (e.g. "John, Jane, Mike")
+- `image` (file)
+
+#### 8. `/api/recognize-multiple-faces` (POST)
+Recognize all faces in a group photo. Returns a structured array of face objects and 'image_meta' for scaling.
+
+**Response:**
+```json
+{
+  "success": true,
+  "message": "Detected 3 face(s), recognized 2 face(s)",
+  "faces_detected": 3,
+  "recognized_faces": [
+    {
+      "recognized": true,
+      "name": "John Doe",
+      "confidence": 0.85,
+      "face_id": 1,
+      "email": "john@example.com",
+      "bounding_box": { "x": 100, "y": 50, "width": 80, "height": 100 }
+    }
+  ],
+  "image_meta": { "width": 1200, "height": 800 }
+}
+```
+
+#### 7. `/api/delete-face` (DELETE)
 Delete a face from the database.
 
 **Query Parameters:**
@@ -308,6 +380,7 @@ List all saved faces.
       "name": "John Doe",
       "email": "john@example.com",
       "phone": "+1234567890",
+      "thumbnail": "data:image/jpeg;base64,...",
       "created_at": "2025-12-04T10:30:00",
       "embedding_model": "VGG-Face"
     }
@@ -529,9 +602,10 @@ model_name = "VGG-Face"
 1. **Client Layer**: Web browser and API testing tools
 2. **API Gateway**: FastAPI with middleware
 3. **Router Layer**: Endpoint handlers
-4. **Service Layer**: Business logic
-5. **Model Layer**: AI/ML models
-6. **Data Layer**: Database operations
+4. **Identity Management**: Handles high-recall multi-face matching.
+   - **Full-Range Detection**: Configured MediaPipe with `model_selection=1` for distant groups.
+   - **High Recall**: Optimized detection threshold to `0.4` to catch smaller faces in backgrounds.
+   - **Face Object Array**: Responses return serialized objects coordinating identity, position, and confidence.
 
 ---
 
@@ -550,6 +624,7 @@ model_name = "VGG-Face"
 │     face_embedding: Binary (BLOB)   │
 │     embedding_model: String         │
 │     image_path: String (nullable)   │
+│     thumbnail: String (nullable)    │
 │     created_at: DateTime            │
 │     updated_at: DateTime            │
 └─────────────────────────────────────┘
@@ -579,6 +654,7 @@ CREATE TABLE face_records (
     face_embedding BLOB NOT NULL,
     embedding_model VARCHAR DEFAULT 'VGG-Face',
     image_path VARCHAR,
+    thumbnail VARCHAR,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
@@ -688,12 +764,7 @@ uvicorn app.main:app --port 8001
    - Live face tracking
    - Real-time recognition
 
-2. **Multi-face Support**
-   - Detect multiple faces
-   - Batch recognition
-   - Group photos
-
-3. **Advanced Analytics**
+2. **Advanced Analytics**
    - Recognition statistics
    - Usage dashboards
    - Performance metrics
@@ -755,10 +826,10 @@ For issues, questions, or contributions, please open an issue on GitHub.
 |--------|-------|
 | **Total Files Created** | 30+ |
 | **Total Lines of Code** | ~3,500+ |
-| **API Endpoints** | 11 |
-| **Detection Endpoints** | 3 |
-| **Recognition Endpoints** | 4 |
-| **Pydantic Schemas** | 13 |
+| **API Endpoints** | 12 |
+| **Detection Endpoints** | 4 |
+| **Recognition Endpoints** | 6 |
+| **Pydantic Schemas** | 18 |
 | **Database Models** | 2 |
 | **Service Classes** | 2 |
 | **Frontend Files** | 3 |
